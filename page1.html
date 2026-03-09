@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+html {
+  -webkit-text-size-adjust: 100%;
+  font-size: 1rem;
+}
+
+body {
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 15px;
+}
+
+.flex-text-safe {
+  display: flex;
+  flex-wrap: wrap;     /* REQUIRED */
+  white-space: normal; /* REQUIRED */
+}
+
+.box {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<p>This paragraph WILL scale when you increase Accessibility → Display & Text Size → Larger Text on iOS.</p>
+
+<div class="flex-text-safe box">
+  This text is inside a flexbox, but it will still resize because wrapping is allowed.
+</div>
+
+</body>
+</html>
