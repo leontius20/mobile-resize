@@ -1,140 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <!-- Viewport: allow zoom, respect device width, and handle notches (iOS safe areas) -->
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta charset="UTF-8" />
+  <title>Accessible & Resizable Sample</title>
 
-<!-- Optional but helpful: tell browsers your backgrounds can adapt to light/dark; 
-     not directly about resizing, but improves accessibility themes -->
-<meta name="color-scheme" content="light dark">
-    <title>Sample HTML Page</title>
-    <style>
-        /* 1) Let OS-level text scaling work (iOS Safari & Android Chrome) */
-html {
-  /* Respect user text size preferences; 100% = don't disable text inflation */
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
+  <!-- Viewport: allow zoom + safe areas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
 
-/* 2) Base font size with fluid scaling: readable min, scales up a bit on wider screens */
-html {
-  /* Clamp base font-size between 16px and 20px with a fluid middle */
-  font-size: clamp(16px, 1.2vw + 1rem, 20px);
-}
-
-/* 3) Use relative units everywhere so text scales consistently */
-body {
-  font-size: 1rem;          /* Relative to html’s font-size */
-  line-height: 1.6;         /* Comfortable default */
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  margin: 0;
-  padding: 0;
-  /* Safe area padding for iOS notches (only applied when present) */
-  padding-left: max(16px, env(safe-area-inset-left));
-  padding-right: max(16px, env(safe-area-inset-right));
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
-}
-
-/* 4) Make typographic scale responsive & accessible */
-h1 { font-size: clamp(1.75rem, 2.5vw + 1rem, 2.5rem); line-height: 1.2; }
-h2 { font-size: clamp(1.5rem,  2vw + 1rem,   2rem);   line-height: 1.3; }
-h3 { font-size: clamp(1.25rem, 1.5vw + 1rem, 1.5rem); line-height: 1.35; }
-p, li, td, th { font-size: 1rem; }
-
-/* 5) Tables: let content wrap and be scrollable on small screens */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  overflow-x: auto;
-  display: block; /* enables horizontal scroll when needed */
-}
-th, td {
-  font-size: 1rem;  /* relative, so it scales */
-  padding: 0.5rem;
-  border: 1px solid #444;
-  text-wrap: pretty;          /* modern wrap */
-  overflow-wrap: anywhere;    /* legacy-friendly wrap */
-}
-
-/* 6) Buttons/interactive targets: minimum touch size */
-button, a, input, select, textarea {
-  font-size: 1rem;
-  line-height: 1.2;
-  min-height: 44px;          /* WCAG touch target guidance */
-  padding: 0.6rem 0.9rem;
-}
-
-/* 7) Respect user motion preferences (not resize-related, but accessibility best practice) */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* 8) Optional: improve contrast mode support */
-@media (prefers-contrast: more) {
-  :root {
-    --border: #222;
-  }
-  th, td { border-color: var(--border); }
-}
-
-/* 9) Avoid fixed px layout spacings—use rem for scale-friendly spacing */
-.container { max-width: 60rem; margin-inline: auto; padding: 1rem; }
-
-        table {
-            border-collapse: collapse;
-            width: 50%;
-        }
-        table, th, td {
-            border: 1px solid #333;
-            padding: 8px;
-        }
-        th {
-            background-color: #f0f0f0;
-        }
-    </style>
+  <style>
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; font-size: clamp(16px, 1.2vw + 1rem, 20px); }
+    body {
+      font-size: 1rem; line-height: 1.6; margin: 0;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+    h1 { font-size: clamp(1.75rem, 2.5vw + 1rem, 2.5rem); line-height: 1.2; }
+    h2 { font-size: clamp(1.5rem, 2vw + 1rem, 2rem); line-height: 1.3; }
+    p, li, td, th { font-size: 1rem; }
+    ul { padding-left: 1.25rem; }
+    table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto; }
+    th, td { border: 1px solid #444; padding: 0.5rem; overflow-wrap: anywhere; }
+    button, a, input, select, textarea { font-size: 1rem; min-height: 44px; padding: 0.6rem 0.9rem; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
 </head>
 <body>
+  <h1>Sample HTML Elements</h1>
+  <p>This paragraph scales with user settings on iOS and Android.</p>
 
-    <h1>Sample HTML Elements</h1>
+  <h2>Sample Unordered List</h2>
+  <ul>
+    <li>First item</li>
+    <li>Second item</li>
+    <li>Third item</li>
+  </ul>
 
-    <!-- Paragraph -->
-    <p>This is a sample paragraph demonstrating basic HTML structure. You can use HTML to display text, lists, tables, and more.</p>
-
-    <!-- Unordered List -->
-    <h2>Sample Unordered List</h2>
-    <ul>
-        <li>First item</li>
-        <li>Second item</li>
-        <li>Third item</li>
-    </ul>
-
-    <!-- Table -->
-    <h2>Sample Table</h2>
-    <table>
-        <tr>
-            <th>Sl. No</th>
-            <th>Name</th>
-            <th>Age</th>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Alice</td>
-            <td>25</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Bob</td>
-            <td>30</td>
-        </tr>
-    </table>
-
+  <h2>Sample Table</h2>
+  <table>
+    <tr><th>Sl. No</th><th>Name</th><th>Age</th></tr>
+    <tr><td>1</td><td>Alice</td><td>25</td></tr>
+    <tr><td>2</td><td>Bob</td><td>30</td></tr>
+  </table>
 </body>
 </html>
