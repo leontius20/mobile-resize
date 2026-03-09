@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Accessible Autocomplete Combobox (with aria-live count)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Basic styling for clarity (not required for accessibility) */
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; padding: 2rem; }
+    .field { max-width: 420px; }
+    .combobox {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .combo-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.5rem 2.25rem 0.5rem 0.5rem;
+      font-size: 1rem;
+    }
+    .combo-button {
+      position: absolute;
+      right: 0.25rem;
+      top: 0.25rem;
+      height: calc(100% - 0.5rem);
+      padding: 0 0.5rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .listbox {
+      margin-top: 4px;
+      position: absolute;
+      z-index: 1000;
+      width: 100%;
+      max-height: 220px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .option {
+      padding: 0.45rem 0.6rem;
+      cursor: pointer;
+    }
+    .option[aria-selected="true"],
+    .option.option--active {
+      background: #e7f1ff;
+    }
+    .hidden {
+      display: none;
+    }
+    .sr-only {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
+      border: 0; padding: 0; margin: -1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="field">
+    <label for="city-input" id="city-label">City</label>
+    <div class="combobox"
+         role="combobox"
+         aria-haspopup="listbox"
+         aria-owns="city-listbox"
+         aria-expanded="false"
+         aria-labelledby="city-label">
+      <input id="city-input"
+             class="combo-input"
+             type="text"
+             aria-autocomplete="list"
+             aria-controls="city-listbox"
+             aria-activedescendant=""
+             autocomplete="off"
+             placeholder="Type to filter…" />
+      <button class="combo-button"
+              aria-label="Toggle options"
+              aria-expanded="false"
+              type="button"
+              id="toggle-btn">▾</button>
+
+      <ul id="city-listbox"
+          class="listbox hidden"
+          role="listbox"></ul>
+
+      <!-- Live region for announcing counts and selections -->
+      <div id="live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+    </div>
+    <p id="hint" style="margin-top:0.5rem;color:#555;">
+      Tip: Use ↑/↓ to navigate, Enter to select, Esc to close.
+    </p>
+  </div>
+
+  <script>
+    (function () {
+      // Sample data (replace with your list as needed)
+      const OPTIONS = [
+        "Amsterdam", "Athens", "Auckland", "Austin",
+        "Bangalore", "Bangkok", "Barcelona", "Beijing", "Berlin", "Bogotá", "Boston", "Brisbane", "Brussels",
+        "Cairo", "Cape Town", "Chennai", "Chicago", "Copenhagen",
+        "Delhi", "Doha", "Dubai", "Dublin",
+        "Edinburgh",
+        "Frankfurt",
+        "Geneva", "Guangzhou",
+        "Hanoi", "Helsinki", "Hong Kong", "Houston",
+        "Istanbul",
+        "Jakarta", "Johannesburg",
+        "Karachi", "Kuala Lumpur",
+        "Lisbon", "London", "Los Angeles", "Lyon",
+        "Madrid", "Manila", "Melbourne", "Mexico City", "Miami", "Milan", "Montreal", "Moscow", "Munich",
+        "Nairobi", "New York", "Nice",
+        "Osaka", "Oslo", "Ottawa",
+        "Paris", "Perth", "Prague",
+        "Quito",
+        "Rio de Janeiro", "Riyadh", "Rome",
+        "San Francisco", "Santiago", "Sao Paulo", "Seoul", "Shanghai", "Shenzhen", "Singapore", "Stockholm", "Sydney",
+        "Taipei", "Tallinn", "Tehran", "Tel Aviv", "Tokyo", "Toronto",
+        "Valencia", "Vancouver", "Vienna", "Vilnius",
+        "Warsaw", "Washington DC",
+        "Zurich"
+      ];
+
+      // Elements
+      const combo = document.querySelector('.combobox');
+      const input = document.getElementById('city-input');
+      const listbox = document.getElementById('city-listbox');
+      const toggleBtn = document.getElementById('toggle-btn');
+      const liveRegion = document.getElementById('live-region');
+
+      // State
+      let filtered = [...OPTIONS];
+      let activeIndex = -1;
+      let isOpen = false;
+
+      function setExpanded(open) {
+        isOpen = open;
+        combo.setAttribute('aria-expanded', String(open));
+        toggleBtn.setAttribute('aria-expanded', String(open));
+        listbox.classList.toggle('hidden', !open);
+      }
+
+      function announce(message) {
+        // Clear then set to ensure screen readers re-announce
+        liveRegion.textContent = '';
+        // small timeout can help some ATs re-queue announcements
+        setTimeout(() => { liveRegion.textContent = message; }, 10);
+      }
+
+      function renderList(options, highlightIndex = -1) {
+        listbox.innerHTML = '';
+        options.forEach((label, idx) => {
+          const li = document.createElement('li');
+          li.id = `city-opt-${idx}`;
+          li.className = 'option' + (idx === highlightIndex ? ' option--active' : '');
+          li.setAttribute('role', 'option');
+          li.setAttribute('aria-selected', String(idx === highlightIndex));
+          li.textContent = label;
+          li.addEventListener('mousedown', (e) => {
+            // Prevent blur before click handler runs
+            e.preventDefault();
+          });
+          li.addEventListener('click', () => {
+            commitSelection(idx);
+            closeList();
+            input.focus();
+          });
+          listbox.appendChild(li);
+        });
+
+        // Update active descendant
+        if (highlightIndex >= 0 && options[highlightIndex]) {
+          input.setAttribute('aria-activedescendant', `city-opt-${highlightIndex}`);
+        } else {
+          input.setAttribute('aria-activedescendant', '');
+        }
+      }
+
+      function openList() {
+        if (!isOpen) {
+          setExpanded(true);
+          renderList(filtered, activeIndex);
+          // Announce total when opening
+          const count = filtered.length;
+          announce(count === 0
+            ? 'No results.'
+            : (count === 1 ? '1 result available.' : `${count} results available.`)
+          );
+        }
+      }
+
+      function closeList() {
+        if (isOpen) {
+          setExpanded(false);
+          activeIndex = -1;
+          input.setAttribute('aria-activedescendant', '');
+        }
+      }
+
+      function filterOptions(value) {
+        const query = value.trim().toLowerCase();
+        filtered = OPTIONS.filter(opt => opt.toLowerCase().includes(query));
+        activeIndex = filtered.length ? 0 : -1;
+        renderList(filtered, activeIndex);
+
+        // When filtering while open, announce new count
+        if (isOpen) {
+          const count = filtered.length;
+          announce(count === 0
+            ? 'No results.'
+            : (count === 1 ? '1 result available.' : `${count} results available.`)
+          );
+        }
+      }
+
+      function moveActive(delta) {
+        if (!filtered.length) return;
+        activeIndex = (activeIndex + delta + filtered.length) % filtered.length;
+        renderList(filtered, activeIndex);
+      }
+
+      function commitSelection(index) {
+        if (index >= 0 && index < filtered.length) {
+          input.value = filtered[index];
+          announce(`Selected ${filtered[index]}.`);
+        }
+      }
+
+      // Events
+      input.addEventListener('input', (e) => {
+        filterOptions(e.target.value);
+        openList(); // open on typing
+      });
+
+      input.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            if (!isOpen) openList();
+            moveActive(1);
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            if (!isOpen) openList();
+            moveActive(-1);
+            break;
+          case 'Enter':
+            if (isOpen && activeIndex >= 0) {
+              e.preventDefault();
+              commitSelection(activeIndex);
+              closeList();
+            }
+            break;
+          case 'Escape':
+            if (isOpen) {
+              e.preventDefault();
+              closeList();
+            } else {
+              input.select();
+            }
+            break;
+        }
+      });
+
+      input.addEventListener('focus', () => {
+        // Do not force open on focus; optional behavior. Uncomment to open on focus:
+        // openList();
+      });
+
+      input.addEventListener('blur', (e) => {
+        // Defer close so click can register
+        setTimeout(() => closeList(), 100);
+      });
+
+      toggleBtn.addEventListener('click', () => {
+        if (isOpen) {
+          closeList();
+        } else {
+          // Reset filter when explicitly toggled to show full list
+          filterOptions(''); // rebuild filtered with all options
+          openList();
+        }
+      });
+
+      // Initialize
+      filterOptions('');
+      closeList();
+    })();
+  </script>
+</body>
+</html>
