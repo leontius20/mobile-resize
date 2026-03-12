@@ -7,10 +7,13 @@
  ol {
   counter-reset: listCounter;
    list-style: none;
+   width" 100px;
 }
 ol li {
   counter-increment: listCounter;
   margin-bottom: 30px;
+  display: grid;
+    grid-template-columns: 0.1fr 1fr;
 }
 ol li:before {
   content: counter(listCounter);
@@ -21,9 +24,9 @@ ol li:before {
 <body>
   <div>Start OL</div>
 <ol>
-  <li>apple</li>
-  <li>orange</li>
-  <li>grape</li>
+  <li>apple apple apple apple apple apple apple apple apple</li>
+  <li>orange orange orange orange orange orange orange orange</li>
+  <li>grape grape grape grape grape grape grape grape grape</li>
 </ol>
     <div>END OL</div>
 </body>
