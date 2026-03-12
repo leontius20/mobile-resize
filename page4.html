@@ -4,14 +4,24 @@
   <meta charset="utf-8" />
   <title>OL LI</title>
   <style>
-
+ ol {
+  counter-reset: listCounter;
+}
+ol li {
+  counter-increment: listCounter;
+}
+ol li:before {
+  content: counter(listCounter) ")";
+}
   </style>
 </head>
 <body>
+  <div>Start OL</div>
 <ol>
   <li>apple</li>
   <li>orange</li>
   <li>grape</li>
 </ol>
+    <div>END OL</div>
 </body>
 </html>
