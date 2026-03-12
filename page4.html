@@ -4,29 +4,43 @@
   <meta charset="utf-8" />
   <title>OL LI</title>
   <style>
- ol {
-  counter-reset: listCounter;
-   list-style: none;
-   width" 100px;
+.content-list-ol {
+    counter-reset: num;
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
 }
-ol li {
-  counter-increment: listCounter;
-  margin-bottom: 30px;
-  display: grid;
-    grid-template-columns: 0.1fr 1fr;
+
+    .content-list-ol>li {
+    counter-increment: num;
+    display: grid;
+    font-size: 14px;
+    gap: 12px;
+    grid-template-columns: 0fr 1fr;
+    margin-bottom: 30px;
+    width: 100%;
 }
-ol li:before {
-  content: counter(listCounter);
-  padding-right:10px;
+   .content-list-ol>li:before {
+    align-items: center;
+    background: #5a287d;
+    border-radius: 50%;
+    color: var(--color-white);
+    content: counter(num);
+    display: inline-flex;
+    flex: 0 0 24px;
+    height: 24px;
+    justify-content: center;
+    width: 24px;
 }
   </style>
 </head>
 <body>
   <div>Start OL</div>
-<ol>
-  <li>apple apple apple apple apple apple apple apple apple</li>
-  <li>orange orange orange orange orange orange orange orange</li>
-  <li>grape grape grape grape grape grape grape grape grape</li>
+<ol class="content-list-ol">
+  <li>Applying won’t impact your personal credit score - we’ll run a soft check.</li>
+  <li>We’ll run a hard credit check on your business credit file.</li>
+  <li>If you need to change any application details, you can go back to that screen now.</li>
+  <li>By proceeding, you consent to your data being used for this check.</li>
 </ol>
     <div>END OL</div>
 </body>
