@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accessible Income Input</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 400px;
+    }
+
+    label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input {
+      font-size: 16px;
+      padding: 12px;
+      border: 2px solid #666;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #0057b8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-group">
+    <label for="gross-income" aria-hidden="true">
+      What's your annual income before tax?
+    </label>
+
+    <!--
+      Wrapper div acts as the single TalkBack focus stop.
+      aria-label on the wrapper = full announcement including value.
+      The input inside is hidden from the a11y tree with aria-hidden,
+      but still receives real keyboard/touch input.
+    -->
+    <div
+      id="gross-income-wrapper"
+      role="textbox"
+      tabindex="0"
+      aria-label="What's your annual income before tax?"
+      aria-multiline="false"
+      style="position: relative;"
+      onclick="document.getElementById('gross-income').focus()"
+    >
+      <input
+        id="gross-income"
+        type="text"
+        inputmode="numeric"
+        aria-hidden="true"
+        tabindex="-1"
+        style="
+          width: 100%;
+          font-size: 16px;
+          padding: 12px;
+          border: 2px solid #666;
+          border-radius: 6px;
+          outline: none;
+          box-sizing: border-box;
+        "
+      />
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('gross-income');
+    const wrapper = document.getElementById('gross-income-wrapper');
+    const baseLabel = "What's your annual income before tax?";
+
+    function updateAriaLabel() {
+      const val = input.value.trim();
+      wrapper.setAttribute(
+        'aria-label',
+        val ? `${baseLabel} ${val}` : baseLabel
+      );
+    }
+
+    // Update label while typing
+    input.addEventListener('input', updateAriaLabel);
+
+    // When TalkBack focuses the wrapper div, forward real focus to input
+    wrapper.addEventListener('focus', () => {
+      updateAriaLabel();
+      input.focus();
+    });
+
+    // Keep wrapper in sync when input itself gets focus (e.g. on return swipe)
+    input.addEventListener('focus', updateAriaLabel);
+  </script>
+
+</body>
+</html>
