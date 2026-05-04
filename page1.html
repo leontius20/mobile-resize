@@ -38,21 +38,7 @@ body {
     border: 0; /* Ensures no visible border remains */
 }
 </style>
-  <script>
-const input = document.getElementById('gross-income');
-const baseLabel = "What's your annual income before tax? GBP";
-
-function updateAriaLabel() {
-  if (input.value) {
-    input.setAttribute('aria-label', `${baseLabel} ${input.value}`);
-  } else {
-    input.setAttribute('aria-label', baseLabel);
-  }
-}
-
-//input.addEventListener('input', updateAriaLabel);   // while typing
-input.addEventListener('focus', updateAriaLabel);   // when returning to field
-  </script>
+  
 </head>
 
 <body>
@@ -96,5 +82,20 @@ input.addEventListener('focus', updateAriaLabel);   // when returning to field
   />
 </div>
   </div>
+  <script>
+const input = document.getElementById('gross-income');
+const baseLabel = "What's your annual income before tax? GBP";
+
+function updateAriaLabel() {
+  if (input.value) {
+    input.setAttribute('aria-label', `${baseLabel} ${input.value}`);
+  } else {
+    input.setAttribute('aria-label', baseLabel);
+  }
+}
+
+input.addEventListener('input', updateAriaLabel);   // while typing
+input.addEventListener('focus', updateAriaLabel);   // when returning to field
+  </script>
 </body>
 </html>
