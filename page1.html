@@ -70,10 +70,21 @@ body {
     </div>
   </div>
   <div>
-     <label for="gross-income" aria-hidden="true">Whats your annual income before tax ?</label>
-    <div>
-      <input aria-invalid="false" inputmode="decimal" aytocomplete="off" aria-label="Whats your annual income before tax ?" type="text" name="gross-income" id="gross-income" placeholder="0.00"/>
-    </div>
+    
+<label id="income-label" for="gross-income">
+  What’s your annual income before tax?
+</label>
+
+<span id="income-currency" class="sr-only">
+  GBP
+</span>
+
+<input
+  id="gross-income"
+  type="text"
+  aria-labelledby="income-label income-currency"
+/>
+
   </div>
 </body>
 </html>
