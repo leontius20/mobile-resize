@@ -71,18 +71,20 @@ body {
   </div>
   <div>
     
-<label id="income-label" for="gross-income">
+<label for="gross-income">
   What’s your annual income before tax?
-</label>
-
-<span id="income-currency" class="visually-hidden">
+  <span class="visually-hidden">
   GBP
 </span>
+</label>
+
+
 
 <input
   id="gross-income"
   type="text"
-  aria-labelledby="income-label income-currency"
+inputmode="decimal"
+  placeholder="0.00"
 />
 
   </div>
