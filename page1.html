@@ -71,14 +71,21 @@ body {
   </div>
   <div>
 <div>
+  <!-- Visible label, hidden from a11y tree -->
   <label for="gross-income" aria-hidden="true">
     What's your annual income before tax?
   </label>
+
   <input
     id="gross-income"
     type="text"
-    aria-label="What's your annual income before tax?"
+    aria-labelledby="gross-income-label"
   />
+
+  <!-- Hidden from view, visible to a11y tree -->
+  <span id="gross-income-label" class="visually-hidden">
+    What's your annual income before tax? GBP
+  </span>
 </div>
   </div>
 </body>
