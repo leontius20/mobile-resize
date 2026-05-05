@@ -72,30 +72,15 @@ body {
   </div>
   <div>
 <div>
-  <label for="gross-income" aria-hidden="true">
+  <label id="amountlabel">
     What's your annual income before tax?
   </label>
+  <span id="currencytext" class="visually-hidden">GBP</span>
   <input
-    id="gross-income"
     type="text"
-    aria-label="What's your annual income before tax? GBP"
+    aria-labelledby="amountlabel currencytext"
   />
 </div>
   </div>
-  <script>
-const input = document.getElementById('gross-income');
-const baseLabel = "What's your annual income before tax? GBP";
-
-function updateAriaLabel() {
-  if (input.value) {
-    input.setAttribute('aria-label', `${baseLabel} ${input.value}`);
-  } else {
-    input.setAttribute('aria-label', baseLabel);
-  }
-}
-
-input.addEventListener('input', updateAriaLabel);   // while typing
-input.addEventListener('focus', updateAriaLabel);   // when returning to field
-  </script>
 </body>
 </html>
