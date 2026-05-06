@@ -30,6 +30,17 @@
     text-align:center;
      padding-top:5px;
 }
+    .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
   </style>
 </head>
 <body>
@@ -41,5 +52,23 @@
   <li>By proceeding, you consent to your data being used for this check.</li>
 </ol>
     <div>END OL</div>
+
+  <div>
+  <!-- Visible label, hidden from a11y tree -->
+  <label for="gross-income" aria-hidden="true">
+    What's your annual income before tax?
+  </label>
+
+  <input
+    id="gross-income"
+    type="text"
+    aria-labelledby="gross-income-label"
+  />
+
+  <!-- Hidden from view, visible to a11y tree -->
+  <span id="gross-income-label" class="sr-only">
+    What's your annual income before tax?
+  </span>
+</div>
 </body>
 </html>
